@@ -1,12 +1,15 @@
 ---
-title: FLUX.1 DEV Canny
+title: FLUX.1-DEV Canny
 emoji: 💻
 colorFrom: pink
-colorTo: red
+colorTo: purple
 sdk: gradio
 sdk_version: 4.40.0
 app_file: app.py
-pinned: false
+pinned: true
+short_description: FLUX Dev - Controlnet Canny
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+https://github.com/XLabs-AI/x-flux.git
+
+#Flux #Controlnet
