@@ -1,6 +1,6 @@
 ---
 title: FLUX.1-DEV Canny
-emoji: 💻
+emoji: 🧋
 colorFrom: pink
 colorTo: purple
 sdk: gradio
