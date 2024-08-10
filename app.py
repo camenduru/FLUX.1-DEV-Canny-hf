@@ -7,10 +7,10 @@ from einops import rearrange
 import requests
 import spaces
 from huggingface_hub import login
+from gradio_imageslider import ImageSlider  # Import ImageSlider
 
-hf_token = os.getenv("HF_TOKEN")
 # Login to Hugging Face
-login(token=hf_token)
+login(token=os.getenv("HF_TOKEN"))
 
 from image_datasets.canny_dataset import canny_processor, c_crop
 from src.flux.sampling import denoise_controlnet, get_noise, get_schedule, prepare, unpack
@@ -51,7 +51,7 @@ def preprocess_canny_image(image, width=1024, height=1024):
     image = canny_processor(image)
     return image
 
-@spaces.GPU()
+@spaces.GPU(duration=120)
 def generate_image(prompt, control_image, num_steps=50, guidance=4, width=512, height=512, seed=42, random_seed=False):
     if random_seed:
         seed = np.random.randint(0, 10000)
@@ -89,7 +89,7 @@ def generate_image(prompt, control_image, num_steps=50, guidance=4, width=512, h
     x1 = rearrange(x1[-1], "c h w -> h w c")
     output_img = Image.fromarray((127.5 * (x1 + 1.0)).cpu().byte().numpy())
     
-    return output_img
+    return [control_image, output_img]  # Return both images for slider
 
 interface = gr.Interface(
     fn=generate_image,
@@ -103,7 +103,7 @@ interface = gr.Interface(
         gr.Number(value=42, label="Seed"),
         gr.Checkbox(label="Random Seed")
     ],
-    outputs=gr.Image(type="pil", label="Generated Image"),
+    outputs=ImageSlider(label="Before / After"),  # Use ImageSlider as the output
     title="FLUX.1 Controlnet Cany",
     description="Generate images using ControlNet and a text prompt.\n[[non-commercial license, Flux.1 Dev](https://huggingface.co/black-forest-labs/FLUX.1-dev/blob/main/LICENSE.md)]"
 )
