@@ -52,7 +52,10 @@ def preprocess_canny_image(image, width=1024, height=1024):
     return image
 
 @spaces.GPU()
-def generate_image(prompt, control_image, num_steps=50, guidance=4, width=512, height=512, seed=42):
+def generate_image(prompt, control_image, num_steps=50, guidance=4, width=512, height=512, seed=42, random_seed=False):
+    if random_seed:
+        seed = np.random.randint(0, 10000)
+        
     if not os.path.isdir("./controlnet_results/"):
         os.makedirs("./controlnet_results/")
 
@@ -97,7 +100,8 @@ interface = gr.Interface(
         gr.Slider(minimum=0.1, maximum=10, value=4, label="Guidance"),
         gr.Slider(minimum=128, maximum=2048, step=128, value=1024, label="Width"),
         gr.Slider(minimum=128, maximum=2048, step=128, value=1024, label="Height"),
-        gr.Number(value=42, label="Seed")
+        gr.Number(value=42, label="Seed"),
+        gr.Checkbox(label="Random Seed")
     ],
     outputs=gr.Image(type="pil", label="Generated Image"),
     title="FLUX.1 Controlnet Cany",
@@ -106,3 +110,4 @@ interface = gr.Interface(
 
 if __name__ == "__main__":
     interface.launch()
+    
